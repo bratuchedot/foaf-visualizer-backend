@@ -1,7 +1,7 @@
-package mk.ukim.finki.foafvisualizerbackend.web;
+package mk.ukim.finki.foafvisualizerbackend.web.rest;
 
 import lombok.AllArgsConstructor;
-import mk.ukim.finki.foafvisualizerbackend.model.FoafResponse;
+import mk.ukim.finki.foafvisualizerbackend.model.response.FoafResponse;
 import mk.ukim.finki.foafvisualizerbackend.service.FoafService;
 import org.springframework.web.bind.annotation.*;
 

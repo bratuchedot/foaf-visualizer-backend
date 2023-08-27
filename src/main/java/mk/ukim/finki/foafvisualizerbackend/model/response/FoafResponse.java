@@ -1,4 +1,4 @@
-package mk.ukim.finki.foafvisualizerbackend.model;
+package mk.ukim.finki.foafvisualizerbackend.model.response;
 
 import java.util.List;
 

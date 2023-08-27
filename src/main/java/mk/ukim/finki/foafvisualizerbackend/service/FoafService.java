@@ -1,10 +1,12 @@
 package mk.ukim.finki.foafvisualizerbackend.service;
 
-import mk.ukim.finki.foafvisualizerbackend.model.FoafResponse;
-import mk.ukim.finki.foafvisualizerbackend.model.FriendResponse;
+import mk.ukim.finki.foafvisualizerbackend.model.exception.BadUrlException;
+import mk.ukim.finki.foafvisualizerbackend.model.response.FoafResponse;
+import mk.ukim.finki.foafvisualizerbackend.model.response.FriendResponse;
 import org.apache.jena.rdf.model.*;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,8 +20,8 @@ public class FoafService {
 
         try (InputStream in = new URL(foafUrl).openStream()) {
             model.read(in, "", "TTL");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new BadUrlException(foafUrl);
         }
 
         Resource meResource = model.getResource(foafUrl + "#me");
