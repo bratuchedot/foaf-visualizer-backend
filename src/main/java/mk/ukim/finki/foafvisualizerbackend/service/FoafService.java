@@ -1,9 +1,11 @@
 package mk.ukim.finki.foafvisualizerbackend.service;
 
 import mk.ukim.finki.foafvisualizerbackend.model.exception.BadUrlException;
+import mk.ukim.finki.foafvisualizerbackend.model.response.KnowsResponse;
 import mk.ukim.finki.foafvisualizerbackend.model.response.FoafResponse;
-import mk.ukim.finki.foafvisualizerbackend.model.response.FriendResponse;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.vocabulary.RDFS;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,37 +27,64 @@ public class FoafService {
         }
 
         Resource meResource = model.getResource(foafUrl + "#me");
-        String name = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/name");
-        String title = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/title");
-        String firstName = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/givenname");
-        String lastName = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/family_name");
-        String nickname = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/nick");
-        String email = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/mbox_sha1sum");
-        String homepage = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/homepage");
-        String pictureUrl = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/depiction");
-        String phoneNumber = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/phone");
-        String workHomepage = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/workplaceHomepage");
-        String workDescription = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/workInfoHomepage");
-        String schoolHomepage = getPropertyAsString(model, meResource, "http://xmlns.com/foaf/0.1/schoolHomepage");
 
-        List<FriendResponse> peopleYouKnow = new ArrayList<>();
-        StmtIterator friendIterator = meResource.listProperties(model.getProperty("http://xmlns.com/foaf/0.1/knows"));
-        while (friendIterator.hasNext()) {
-            Statement stmt = friendIterator.next();
-            Resource friendResource = stmt.getObject().asResource();
-            String friendName = getPropertyAsString(model, friendResource, "http://xmlns.com/foaf/0.1/name");
-            String friendEmail = getPropertyAsString(model, friendResource, "http://xmlns.com/foaf/0.1/mbox_sha1sum");
-            String seeAlso = getPropertyAsString(model, friendResource, "http://www.w3.org/2000/01/rdf-schema#seeAlso");
-            FriendResponse friendResponse = new FriendResponse(friendName, friendEmail, seeAlso);
-            peopleYouKnow.add(friendResponse);
-        }
+        List<String> accounts = getPropertyAsList(meResource, FOAF.account);
+        String age = getPropertyAsString(meResource, FOAF.age);
+        String aimChatID = getPropertyAsString(meResource, FOAF.aimChatID);
+        String basedNear = getPropertyAsString(meResource, FOAF.based_near);
+        String birthday = getPropertyAsString(meResource, FOAF.birthday);
+        String currentProject = getPropertyAsString(meResource, FOAF.currentProject);
+        String depiction = getPropertyAsString(meResource, FOAF.depiction);
+        String familyName = getPropertyAsString(meResource, FOAF.familyName);
+        @Deprecated
+        String family_name = getPropertyAsString(meResource, FOAF.family_name);
+        String firstName = getPropertyAsString(meResource, FOAF.firstName);
+        String gender = getPropertyAsString(meResource, FOAF.gender);
+        String givenName = getPropertyAsString(meResource, FOAF.givenName);
+        @Deprecated
+        String givenname = getPropertyAsString(meResource, FOAF.givenname);
+        String homepage = getPropertyAsString(meResource, FOAF.homepage);
+        String icqChatID = getPropertyAsString(meResource, FOAF.icqChatID);
+        List<String> images = getPropertyAsList(meResource, FOAF.img);
+        List<String> interests = getPropertyAsList(meResource, FOAF.interest);
+        String jabberID = getPropertyAsString(meResource, FOAF.jabberID);
+        List<KnowsResponse> knows = getPeopleYouKnow(meResource);
+        String lastName = getPropertyAsString(meResource, FOAF.lastName);
+        String logo = getPropertyAsString(meResource, FOAF.logo);
+        List<String> madeList = getPropertyAsList(meResource, FOAF.made);
+        List<String> mboxes = getPropertyAsList(meResource, FOAF.mbox);
+        List<String> mboxSha1sums = getPropertyAsList(meResource, FOAF.mbox_sha1sum);
+        String msnChatID = getPropertyAsString(meResource, FOAF.msnChatID);
+        String myersBriggs = getPropertyAsString(meResource, FOAF.myersBriggs);
+        String name = getPropertyAsString(meResource, FOAF.name);
+        String nick = getPropertyAsString(meResource, FOAF.nick);
+        String openID = getPropertyAsString(meResource, FOAF.openid);
+        String page = getPropertyAsString(meResource, FOAF.page);
+        String pastProject = getPropertyAsString(meResource, FOAF.pastProject);
+        List<String> phones = getPropertyAsList(meResource, FOAF.phone);
+        List<String> publications = getPropertyAsList(meResource, FOAF.publications);
+        String schoolHomepage = getPropertyAsString(meResource, FOAF.schoolHomepage);
+        String skypeID = getPropertyAsString(meResource, FOAF.skypeID);
+        @Deprecated
+        String surname = getPropertyAsString(meResource, FOAF.surname);
+        String tipJar = getPropertyAsString(meResource, FOAF.tipjar);
+        String title = getPropertyAsString(meResource, FOAF.title);
+        String weblog = getPropertyAsString(meResource, FOAF.weblog);
+        String workInfoHomepage = getPropertyAsString(meResource, FOAF.workInfoHomepage);
+        String workplaceHomepage = getPropertyAsString(meResource, FOAF.workplaceHomepage);
+        String yahooChatID = getPropertyAsString(meResource, FOAF.yahooChatID);
 
-        return new FoafResponse(name, title, firstName, lastName, nickname, email, homepage, pictureUrl, phoneNumber,
-                workHomepage, workDescription, schoolHomepage, peopleYouKnow);
+        FoafResponse foafResponse = new FoafResponse(accounts, age, aimChatID, basedNear, birthday,
+                currentProject, depiction, familyName, family_name, firstName, gender, givenName, givenname, homepage, icqChatID,
+                images, interests, jabberID, knows, lastName, logo, madeList, mboxes, mboxSha1sums, msnChatID, myersBriggs,
+                name, nick, openID, page, pastProject, phones, publications, schoolHomepage, skypeID, surname, tipJar,
+                title, weblog, workInfoHomepage, workplaceHomepage, yahooChatID);
+        System.out.println(foafResponse);
+        return foafResponse;
     }
 
-    private String getPropertyAsString(Model model, Resource resource, String propertyUri) {
-        Statement stmt = resource.getProperty(model.getProperty(propertyUri));
+    private String getPropertyAsString(Resource resource, Property property) {
+        Statement stmt = resource.getProperty(property);
         if (stmt != null) {
             RDFNode object = stmt.getObject();
             if (object.isLiteral()) {
@@ -65,5 +94,36 @@ public class FoafService {
             }
         }
         return null;
+    }
+
+    private List<String> getPropertyAsList(Resource resource, Property property) {
+        List<String> propertyValues = new ArrayList<>();
+        StmtIterator iterator = resource.listProperties(property);
+        while (iterator.hasNext()) {
+            Statement stmt = iterator.next();
+            RDFNode object = stmt.getObject();
+            if (object.isLiteral()) {
+                propertyValues.add(object.asLiteral().getString());
+            } else {
+                propertyValues.add(object.asResource().getURI());
+            }
+        }
+        return !propertyValues.isEmpty() ? propertyValues : null;
+    }
+
+    private List<KnowsResponse> getPeopleYouKnow(Resource resource) {
+        List<KnowsResponse> peopleYouKnow = new ArrayList<>();
+        StmtIterator knowsIterator = resource.listProperties(FOAF.knows);
+        while (knowsIterator.hasNext()) {
+            Statement stmt = knowsIterator.next();
+            Resource knowsResource = stmt.getObject().asResource();
+            String friendName = getPropertyAsString(knowsResource, FOAF.name);
+            String friendMbox = getPropertyAsString(knowsResource, FOAF.mbox);
+            String friendMboxSha1sum = getPropertyAsString(knowsResource, FOAF.mbox_sha1sum);
+            String seeAlso = getPropertyAsString(knowsResource, RDFS.seeAlso);
+            KnowsResponse knowsResponse = new KnowsResponse(friendName, friendMbox, friendMboxSha1sum, seeAlso);
+            peopleYouKnow.add(knowsResponse);
+        }
+        return !peopleYouKnow.isEmpty() ? peopleYouKnow : null;
     }
 }
