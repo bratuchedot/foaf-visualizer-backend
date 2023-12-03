@@ -74,13 +74,11 @@ public class FoafService {
         String workplaceHomepage = getPropertyAsString(meResource, FOAF.workplaceHomepage);
         String yahooChatID = getPropertyAsString(meResource, FOAF.yahooChatID);
 
-        FoafResponse foafResponse = new FoafResponse(accounts, age, aimChatID, basedNear, birthday,
+        return new FoafResponse(accounts, age, aimChatID, basedNear, birthday,
                 currentProject, depiction, familyName, family_name, firstName, gender, givenName, givenname, homepage, icqChatID,
                 images, interests, jabberID, knows, lastName, logo, madeList, mboxes, mboxSha1sums, msnChatID, myersBriggs,
                 name, nick, openID, page, pastProject, phones, publications, schoolHomepage, skypeID, surname, tipJar,
                 title, weblog, workInfoHomepage, workplaceHomepage, yahooChatID);
-        System.out.println(foafResponse);
-        return foafResponse;
     }
 
     private String getPropertyAsString(Resource resource, Property property) {
