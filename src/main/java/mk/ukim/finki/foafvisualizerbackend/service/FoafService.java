@@ -1,5 +1,6 @@
 package mk.ukim.finki.foafvisualizerbackend.service;
 
+import mk.ukim.finki.foafvisualizerbackend.model.exception.BadResourceException;
 import mk.ukim.finki.foafvisualizerbackend.model.exception.BadUrlException;
 import mk.ukim.finki.foafvisualizerbackend.model.response.KnowsResponse;
 import mk.ukim.finki.foafvisualizerbackend.model.response.FoafResponse;
@@ -19,14 +20,14 @@ public class FoafService {
 
     public FoafResponse analyze(String foafUrl) {
         Model model = ModelFactory.createDefaultModel();
-
         try (InputStream in = new URL(foafUrl).openStream()) {
             model.read(in, "", "TTL");
         } catch (IOException e) {
             throw new BadUrlException(foafUrl);
         }
 
-        Resource meResource = model.getResource(foafUrl + "#me");
+        Resource meResource;
+        meResource = getResource(model, foafUrl);
 
         List<String> accounts = getPropertyAsList(meResource, FOAF.account);
         String age = getPropertyAsString(meResource, FOAF.age);
@@ -122,5 +123,16 @@ public class FoafService {
             peopleYouKnow.add(knowsResponse);
         }
         return !peopleYouKnow.isEmpty() ? peopleYouKnow : null;
+    }
+
+    private Resource getResource(Model model, String foafUrl) throws BadResourceException {
+        String[] possibleFragmentIdentifiers = {"#me", "#Me", "#ME", "#mE"};
+        for (String fragmentIdentifier : possibleFragmentIdentifiers) {
+            Resource resource = model.getResource(foafUrl + fragmentIdentifier);
+            if (resource.listProperties().hasNext()) {
+                return resource;
+            }
+        }
+        throw new BadResourceException();
     }
 }
