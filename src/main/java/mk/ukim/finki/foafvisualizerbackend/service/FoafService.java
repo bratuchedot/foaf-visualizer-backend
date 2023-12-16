@@ -50,7 +50,6 @@ public class FoafService {
         String jabberID = getPropertyAsString(meResource, FOAF.jabberID);
         List<KnowsResponse> knows = getPeopleYouKnow(meResource);
         String lastName = getPropertyAsString(meResource, FOAF.lastName);
-        String logo = getPropertyAsString(meResource, FOAF.logo);
         List<String> madeList = getPropertyAsList(meResource, FOAF.made);
         List<String> mboxes = getPropertyAsList(meResource, FOAF.mbox);
         List<String> mboxSha1sums = getPropertyAsList(meResource, FOAF.mbox_sha1sum);
@@ -74,11 +73,11 @@ public class FoafService {
         String workplaceHomepage = getPropertyAsString(meResource, FOAF.workplaceHomepage);
         String yahooChatID = getPropertyAsString(meResource, FOAF.yahooChatID);
 
-        return new FoafResponse(accounts, age, aimChatID, basedNear, birthday,
-                currentProject, depiction, familyName, family_name, firstName, gender, givenName, givenname, homepage, icqChatID,
-                images, interests, jabberID, knows, lastName, logo, madeList, mboxes, mboxSha1sums, msnChatID, myersBriggs,
-                name, nick, openID, page, pastProject, phones, publications, schoolHomepage, skypeID, surname, tipJar,
-                title, weblog, workInfoHomepage, workplaceHomepage, yahooChatID);
+        return new FoafResponse(accounts, age, aimChatID, basedNear, birthday, currentProject, depiction, familyName,
+                family_name, firstName, gender, givenName, givenname, homepage, icqChatID, images, interests, jabberID,
+                knows, lastName, madeList, mboxes, mboxSha1sums, msnChatID, myersBriggs, name, nick, openID, page,
+                pastProject, phones, publications, schoolHomepage, skypeID, surname, tipJar, title, weblog,
+                workInfoHomepage, workplaceHomepage, yahooChatID);
     }
 
     private String getPropertyAsString(Resource resource, Property property) {
